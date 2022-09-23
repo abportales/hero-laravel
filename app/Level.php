@@ -8,4 +8,9 @@ class Level extends Model
 {
     //Relación a la tabla
     protected $table = 'levels';
+
+    public function heroes()
+    {
+        return $this->hasMany('App\heroes');
+    }
 }

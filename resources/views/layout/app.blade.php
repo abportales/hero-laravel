@@ -23,20 +23,20 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="{{ route('admin.index') }}">Home</a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('heroes.index') }}">Heroes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.enemies') }}">Enemies</a>
+                        <a class="nav-link" href="{{ route('enemy.index') }}">Enemies</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.items') }}">Items</a>
+                        <a class="nav-link" href="{{ route('item.index') }}">Items</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled">Disabled</a>
+                        <a class="nav-link" href="{{ route('admin.battlesys') }}">Sistema de batalla</a>
                     </li>
                 </ul>
             </div>

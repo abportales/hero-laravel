@@ -42,7 +42,7 @@ class HeroController extends Controller
     {
         $hero = Hero::find($id);
 
-        $hero->delete($id);
+        $hero->delete();
 
         return redirect()->route('heroes.index');
     }

@@ -35,18 +35,18 @@
                     <td>
                         <div class="row">
                             <div class="col">
-                                {{-- <a href="{{ route('heroes.edit', ['id' => $hero->id]) }}" class="btn btn-warning">
+                                <a href="{{ route('heroes.edit', $hero->id) }}" class="btn btn-warning">
                                     Modificar
-                                </a> --}}
+                                </a>
                             </div>
                             <div class="col">
-                                {{-- <form action="{{ route('heroes.destroy', ['id'=>$hero->id] ) }}" method="POST">
+                                <form action="{{ route('heroes.destroy', $hero->id ) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger">
                                         Eliminar
                                     </button>
-                                </form> --}}
+                                </form>
                             </div>
                         </div>
                     </td>
