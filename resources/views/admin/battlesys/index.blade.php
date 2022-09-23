@@ -6,12 +6,14 @@
     <div class="row text-center text-white mt-2">
         <div class="col bg-primary">
             <h2>{{ $hero }}</h2>
+            <img src="{{ asset('images/heroes/' . $heroAvatar)  }}" alt="" height="150">
         </div>
         <div class="col-1 bg-warning">
             <h2>Vs.</h2>
         </div>
         <div class="col bg-danger">
             <h2>{{ $enemy }}</h2>
+            <img src="{{ asset('images/enemies/' . $enemyAvatar)  }}" alt="" height="150">
         </div>
     </div>
 

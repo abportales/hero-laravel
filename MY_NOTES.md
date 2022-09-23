@@ -232,3 +232,152 @@ $report = [
     dd($hero->level);
     dd($hero->level->xp);
 
+ # Modificando la base de datos para agregar imagenes.
+
+    php artisan make:migration NOMBRE_DEL_CAMPO_TABLE -- table=heroes
+
+## agregamos el campo en laravel, en el archivo de database>NOMBRE_DEL_CAMPO y que pueda ser nullable
+
+    public function up()
+    {
+        Schema::table('heroes', function (Blueprint $table) {
+            $table->string('img_path')->nullable();
+        });
+    }
+
+## con eso ya tenemos el campo en laravel, solo faltaria hacer el "push" a la BD
+
+    php artisan migrate
+
+## ahora en la vista, un form para subir la imagen
+
+    <div class="form-group">
+        <label for="img_path">Imagen</label>
+        <input type="file" class="form-control" name="img_path" id="img_path">
+    </div>
+
+## en el form base, agregar el enctype, ahora admite archivos binarios.
+
+    <form action="{{ route('enemy.store') }}" method="POST" enctype="multipart/form-data">
+
+## en el controler antes del $table->save()
+    if($request->hasFile('img_path'));                      // si tiene imagen a subir
+    {
+        $file = $request->file('img_path');                 // obtenemos el archivo del form
+        $name = time() . $file->getClientOriginalName();    // se asigna un nombre unico, basado en la fecha
+        $file->move(public_path() . '/images/', $name);     // se almacena en laravel, en la carpeta publica
+
+        $enemy->img_path = $name;                           //se almacena en la base de datos.
+    }
+
+## recordemos que al borrar debemos borrarlo tambien de nuestro directorio local, para eso dentro de destroy, en el controller:
+
+    importar: use Illuminate\Support\Facades\File;
+
+    public function destroy($id)
+    {
+        ...
+        $filePath = public_path() . '/images/enemies/' . $enemy->img_path;
+        File::delete($filePath);
+        ...
+    }
+
+# API con postman
+## crearemos un APi controller, ya que todo lo que tenemos es local.
+    php artisan make:controller APIController 
+
+## el manejo de rutas sera en routes>api.php
+
+    Route::get('/', 'APIController@index');
+
+## y en el controller:
+    public function index()
+    {
+        //estructura de JSON(status, message, data y algunas veces code[404,500,200])
+        $res = [
+            "status" => "ok",
+            "message" => "LA API funciona correctamente",
+        ];
+        // se envia la respuesta y el codigo php
+        return response()->json($res, 200);
+    }
+
+## ahora abrimos postman, tiramos a la url: http://127.0.0.1:8000/api y obtenemos la respuesta
+    {
+        "status": "ok",
+        "message": "LA API funciona correctamente"
+    }
+
+## agrgamos otro metodo al controller:
+    public function getAllHeroes()
+    {
+        $heroes = Hero::all();
+
+        $res = [
+            "status" => "ok",
+            "message" => "Lista de heroes",
+            "data" => $heroes
+        ];
+        // se envia la respuesta y el codigo php
+        return response()->json($res, 200);
+    }
+
+## y ahora la ruta
+    Route::get('heroes', 'APIController@getAllHeroes');
+
+## si queremos uno especifico:
+    Route::get('heroes/{id}', 'APIController@getHero');
+
+## controller:
+    public function getHero($id)
+    {
+        $hero = Hero::find($id);
+
+        $res = [
+            "status" => "ok",
+            "message" => "Heroe: " . $hero->name,
+            "data" => $hero
+        ];
+        // se envia la respuesta y el codigo php
+        return response()->json($res, 200);
+    }
+
+## isset() se usa para saber si una variable es nula o no.
+## que pasa si hacemos referencia a un id que no existe...
+
+    public function getHero($id)
+    {
+        $hero = Hero::find($id);
+
+        if (isset($hero)) {
+            $res = [
+                "status" => "ok",
+                "message" => "Heroe: " . $hero->name,
+                "data" => $hero,
+            ];
+        } else {
+            $res = [
+                "status" => "error",
+                "message" => "el heroe no existe",
+            ];
+        }
+        // se envia la respuesta y el codigo php, aunq no se envie data, la api responde correctamente por eso se envia 200.
+        return response()->json($res, 200);
+    }
+
+# Consumir funciones desde la API
+## lo primero es hacer el método (del controllador) 'static'
+    public function runAutoBattle($heroId, $enemyId)
+    public static function runAutoBattle($heroId, $enemyId)
+
+## traer el controller al APIController e invocarlo en un metodo dentro del API
+    public function runManulBattleSys($heroId, $enemyId)
+    {
+        $bs = BattleSysController::runAutoBattle($heroId, $enemyId);
+
+        return $bs;
+    }
+
+## agregar la ruta.
+
+    

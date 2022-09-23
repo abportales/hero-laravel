@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>Crear un item</h1>
-    <form action="{{ route('item.store') }}" method="POST">
+    <form action="{{ route('item.store') }}" method="POST" enctype="multipart/form-data">
         @include('admin.items.form')
         <button type="submit" class="btn btn-primary my-2">Crear</button>
     </form>

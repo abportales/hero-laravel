@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Hero;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class HeroController extends Controller
 {
@@ -42,6 +43,9 @@ class HeroController extends Controller
     {
         $hero = Hero::find($id);
 
+        $filePath = public_path() . '/images/heroes/' . $hero->img_path;
+        File::delete($filePath);
+
         $hero->delete();
 
         return redirect()->route('heroes.index');
@@ -49,7 +53,7 @@ class HeroController extends Controller
 
     public function saveHero(Request $request, $id)
     {
-        if( $id ){
+        if ($id) {
             $hero = Hero::find($id);
         } else {
             $hero = new Hero();
@@ -63,7 +67,17 @@ class HeroController extends Controller
         $hero->def = $request->input('def');
         $hero->luck = $request->input('luck');
         $hero->coins = $request->input('coins');
-        
+
+        if ($request->hasFile('img_path')); // si tiene imagen a subir
+        {
+            $file = $request->file('img_path');
+            if ($file) {
+                $name = time() . "_" . $file->getClientOriginalName();
+                $file->move(public_path() . '/images/heroes', $name);
+                $hero->img_path = $name;
+            }
+        }
+
         $hero->save();
 
         return redirect()->route('heroes.index');

@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>Editar Enemigo: {{$enemy->name}}</h1>
-    <form action="{{ route('enemy.update', $enemy->id) }}" method="POST">
+    <form action="{{ route('enemy.update', $enemy->id) }}" method="POST" enctype="multipart/form-data">
         @method('PUT')
         @include('admin.enemies.form')
         <button type="submit" class="btn btn-warning my-2">Editar</button>

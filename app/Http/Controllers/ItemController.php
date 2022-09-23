@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Item;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class ItemController extends Controller
 {
@@ -72,7 +73,7 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->saveItem($request,$id);
+        return $this->saveItem($request, $id);
     }
 
     /**
@@ -85,6 +86,9 @@ class ItemController extends Controller
     {
         $item = Item::find($id);
 
+        $filePath = public_path() . '/images/items/' . $item->img_path;
+        File::delete($filePath);
+
         $item->delete();
 
         return redirect()->route('item.index');
@@ -92,7 +96,7 @@ class ItemController extends Controller
 
     public function saveItem(Request $request, $id)
     {
-        if( $id ){
+        if ($id) {
             $item = Item::find($id);
         } else {
             $item = new Item();
@@ -104,7 +108,17 @@ class ItemController extends Controller
         $item->def = $request->input('def');
         $item->luck = $request->input('luck');
         $item->cost = $request->input('cost'); //recordemos q este input debe corresponder al name del form
-        
+
+        if ($request->hasFile('img_path')); // si tiene imagen a subir
+        {
+            $file = $request->file('img_path');
+            if ($file) {
+                $name = time() . "_" . $file->getClientOriginalName();
+                $file->move(public_path() . '/images/items', $name);
+                $item->img_path = $name;
+            }
+        }
+
         $item->save();
 
         return redirect()->route('item.index');

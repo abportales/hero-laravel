@@ -9,12 +9,12 @@ class BattleSysController extends Controller
 {
     public function index()
     {
-        dd($this->runManualBattle(1,1));
+        // dd($this->runManualBattle(1,1));
 
         return view('admin.battlesys.index', $this->runAutoBattle(1, 1));
     }
 
-    public function runAutoBattle($heroId, $enemyId)
+    public static function runAutoBattle($heroId, $enemyId)
     {
         $hero = Hero::find($heroId)->first();
         $enemy = Enemy::find($enemyId)->first();
@@ -26,7 +26,7 @@ class BattleSysController extends Controller
         while ($hero->hp > 0 && $enemy->hp > 0) {
             $luck = random_int(0, 100);
 
-            if ($luck >= 50) {
+            if ($luck >= $hero->luck) {     //ataca hero
                 $hp = $enemy->def - $hero->atq; // 5-1 = 4
                 if ($hp < 0) {
                     $enemy->hp -= $hp * -1;
@@ -40,7 +40,7 @@ class BattleSysController extends Controller
                 } else {
                     $ev = [
                         'winner' => 'hero',
-                        "text" => $hero->name . " derroto a: " . $enemy->name . " y gano " . $enemy->xp . "de experiencia.",
+                        "text" => $hero->name . " derroto a: " . $enemy->name . " y gano " . $enemy->xp . " de experiencia.",
                     ];
 
                     $hero->xp += $enemy->xp;
@@ -79,6 +79,8 @@ class BattleSysController extends Controller
             'events' => $events,
             'hero' => $hero->name,
             'enemy' => $enemy->name,
+            'heroAvatar' => $hero->img_path,
+            'enemyAvatar' => $enemy->img_path,
         ];
     }
 
@@ -90,7 +92,7 @@ class BattleSysController extends Controller
 
         $luck = random_int(0, 100);
 
-        if ($luck >= 50) {
+        if ($luck >= $hero->luck) {
             $hp = $enemy->def - $hero->atq; // 5-1 = 4
             if ($hp < 0) {
                 $enemy->hp -= $hp * -1;
@@ -104,7 +106,7 @@ class BattleSysController extends Controller
             } else {
                 return [
                     'winner' => 'hero',
-                    "text" => $hero->name . " derroto a: " . $enemy->name . " y gano " . $enemy->xp . "de experiencia.",
+                    "text" => $hero->name . " derroto a: " . $enemy->name . " y gano " . $enemy->xp . " de experiencia.",
                 ];
 
                 $hero->xp += $enemy->xp;

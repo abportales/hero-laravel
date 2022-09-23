@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>Editar héroe: {{$hero->name}}</h1>
-    <form action="{{ route('heroes.update', $hero->id) }}" method="POST">
+    <form action="{{ route('heroes.update', $hero->id) }}" method="POST" enctype="multipart/form-data">
         @method('PUT')
         {{-- forma de incluir vistas dentro de vistas --}}
         @include('admin.heroes.form') 
